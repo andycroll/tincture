@@ -127,6 +127,10 @@ class ColorNamedTest < Minitest::Test
     assert_predicate Tincture::Color::NAMED, :frozen?
     assert_equal Tincture::Color.rgb(240, 248, 255), Tincture::Color::NAMED.fetch('aliceblue')
   end
+
+  def test_reads_all_148_named_colors_and_transparent
+    assert_equal 149, Tincture::Color::NAMED.size
+  end
 end
 
 class ColorHwbHsvTest < Minitest::Test

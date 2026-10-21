@@ -27,6 +27,10 @@ class LoadingTest < Minitest::Test
     assert_equal '#ff0000 nil', output
   end
 
+  def test_loads_without_yaml
+    assert_equal 'nil', ruby('require "tincture"; print defined?(YAML).inspect')
+  end
+
   def test_registers_the_attribute_types_when_a_rails_app_boots
     output = ruby("#{RAILS_APP}\nprint ActiveModel::Type.lookup(:color).class, ' ', ActiveModel::Type.lookup(:colour).class")
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Performance: `require "tincture"` is about 5 times faster, 10 ms down to 2 ms. Named colours now live in a Ruby hash, so loading the gem no longer loads YAML.
+
 ## 1.0.0 (2026-10-21)
 
 - `Tincture::Color` parses CSS hex, named, `rgb()`, `hsl()`, `hwb()`, `oklab()` and `oklch()` colours, and converts between them and HSV.

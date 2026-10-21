@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 module Tincture
   class Color # rubocop:disable Style/Documentation
     # Reads CSS colour strings: hex, named colours and the `rgb()`, `hsl()`,
@@ -137,8 +135,5 @@ module Tincture
     end
 
     extend Parsing
-
-    # CSS named colours, keyed by lowercase name.
-    NAMED = YAML.load_file(File.expand_path('../named_colors.yml', __dir__)).transform_values { parse(it) }.freeze
   end
 end
