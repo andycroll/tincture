@@ -22,6 +22,38 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - run: bundle exec rake test
+      - if: ${{ !cancelled() && matrix.ruby == '4.0' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/coverage.json
+          retention-days: 7
+
+  # Dependabot and fork pull requests get a read-only token, so they
+  # cannot comment.
+  coverage:
+    needs: test
+    if: >-
+      ${{ !cancelled() && github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: coverage
+      - name: Comment the coverage on the pull request
+        run: |
+          jq -r '.total | [
+            "\(if .lines.missed == 0 then "✅" else "⚠️" end) Line coverage is \(.lines.percent * 100 | round / 100)% (\(.lines.covered) of \(.lines.total) lines)",
+            "\(if .branches.missed == 0 then "✅" else "⚠️" end) Branch coverage is \(.branches.percent * 100 | round / 100)% (\(.branches.covered) of \(.branches.total) branches)"
+          ] | join("\n")' coverage.json > "$RUNNER_TEMP/comment.md"
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/comment.md" --edit-last --create-if-none
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
 
   lint:
     runs-on: ubuntu-latest
