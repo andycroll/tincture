@@ -58,7 +58,7 @@ class ColorParseTest < Minitest::Test
 
   def test_raises_invalidcolor_for_anything_else
     ['', 'orangey', '#ff888', '#gg0000', 'rgb(1, 2)', 'hsl(10, 20%)', 'rgb(1 2 3 4)', 'oklch(0.5 0.1)',
-     'lab(50 20 30)', nil].each do |input|
+     'lab(50 20 30)', 'rgb(10 20 abc)', 'rgb(10deg 20 30)', nil].each do |input|
       assert_raises(Tincture::InvalidColor, "expected #{input.inspect} to be rejected") do
         Tincture::Color.parse(input)
       end
@@ -86,6 +86,7 @@ class ColorConversionTest < Minitest::Test
   def test_outputs_hsl_components
     assert_equal [32.0, 100.0, 50.0], ORANGE.hsl
     assert_equal [0.0, 0.0, 100.0], Tincture::Color.rgb(255, 255, 255).hsl
+    assert_equal [120.0, 100.0, 50.0], Tincture::Color.parse('lime').hsl
   end
 
   def test_outputs_css_rgb_and_hsl_strings
