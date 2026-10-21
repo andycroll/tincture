@@ -22,6 +22,45 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - run: bundle exec rake test
+      - if: matrix.ruby == '4.0'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
+  coverage:
+    if: github.event_name == 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+      - uses: actions/download-artifact@v8
+        with:
+          name: coverage
+          path: coverage/
+      - name: Check coverage of the changed files
+        id: check
+        run: .github/scripts/coverage_report.rb > "$RUNNER_TEMP/coverage.md"
+        env:
+          BASE_REF: ${{ github.base_ref }}
+      - name: Comment on the pull request
+        # Pull requests from forks get a read-only token, so they skip the comment.
+        if: ${{ !cancelled() && steps.check.outcome != 'skipped' && github.event.pull_request.head.repo.full_name == github.repository }}
+        run: gh pr comment "$PR" --edit-last --create-if-none --body-file "$RUNNER_TEMP/coverage.md"
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
 
   lint:
     runs-on: ubuntu-latest
