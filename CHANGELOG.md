@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Performance: `require "tincture"` is about 5 times faster, 10 ms down to 2 ms. Named colours now live in a Ruby hash, so loading the gem no longer loads YAML.
+- Performance: `luminance`, `contrast_ratio`, `contrast_color` and `difference` are 15–50% faster. They look up each channel's linear value in a table and no longer compute a power. Results are unchanged.
 
 ## 1.0.0 (2026-10-21)
 
