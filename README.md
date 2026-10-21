@@ -169,6 +169,6 @@ bundle exec rake        # tests and RuboCop
 bundle exec rake rdoc   # API docs in doc/
 ```
 
-To release, set the version in `lib/tincture/version.rb`, date the changelog entry, commit, and push a `vX.Y.Z` tag. GitHub Actions runs the checks and publishes the gem to rubygems.org through trusted publishing.
+To release, set the version in `lib/tincture/version.rb`, date the changelog entry, commit, and push a `vX.Y.Z` tag. GitHub Actions runs the checks, publishes the gem to rubygems.org through trusted publishing, and creates a GitHub release with that changelog entry as its notes.
 
 Comments are Markdown. Method types are inline RBS (`#: (String) -> Color`), which RDoc shows on each method.

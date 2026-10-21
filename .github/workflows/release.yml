@@ -20,4 +20,16 @@ jobs:
           ruby-version: "4.0"
           bundler-cache: true
       - run: bundle exec rake
+      - name: Read the release notes from the changelog
+        run: |
+          ruby -e '
+            version = Regexp.escape(ARGV[0])
+            notes = File.read("CHANGELOG.md")[/^## #{version} .*?\n(.*?)(?=^## |\z)/m, 1]
+            abort "CHANGELOG.md has no entry for #{ARGV[0]}" unless notes
+            puts notes.strip
+          ' "${GITHUB_REF_NAME#v}" > "$RUNNER_TEMP/notes.md"
       - uses: rubygems/release-gem@v1
+      - name: Create the GitHub release
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md"
+        env:
+          GH_TOKEN: ${{ github.token }}
