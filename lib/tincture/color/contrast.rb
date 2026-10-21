@@ -138,8 +138,11 @@ module Tincture
       # The smallest mix toward `extreme` that passes the block. Assumes the
       # block fails here and passes at `extreme`.
       def nearest_mix_toward(extreme)
-        amount = (0.0..1.0).bsearch { |candidate| yield mixed_toward(extreme, candidate) }
-        mixed_toward(extreme, amount)
+        start = oklab_components
+        finish = extreme.oklab_components
+
+        amount = (0.0..1.0).bsearch { |candidate| yield mixed_oklab(start, finish, candidate) }
+        mixed_oklab(start, finish, amount)
       end
 
       def contrast_scorer(method)

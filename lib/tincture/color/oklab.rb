@@ -95,10 +95,8 @@ module Tincture
 
       private
 
-      def mixed_toward(other, amount)
-        lightness, a, b = oklab_components.zip(other.oklab_components).map do |mine, theirs|
-          mine + ((theirs - mine) * amount)
-        end
+      def mixed_oklab(start, finish, amount)
+        lightness, a, b = start.zip(finish).map { |mine, theirs| mine + ((theirs - mine) * amount) }
         Color.oklab(lightness, a, b, alpha)
       end
     end
