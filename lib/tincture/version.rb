@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Tincture
-  VERSION = '0.1.0' # :nodoc:
+  VERSION = '1.0.0' # :nodoc:
 end
