@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Tincture
-  class Color
+  class Color # rubocop:disable Style/Documentation
     # WCAG 2 minimum contrast ratios.
     WCAG_RATIOS = { aa: { normal: 4.5, large: 3.0 }, aaa: { normal: 7.0, large: 4.5 } }.freeze
 
@@ -150,7 +150,7 @@ module Tincture
       end
 
       def oklab_contrast_color(candidates)
-        if candidates.sort_by(&:luminance) == [BLACK, WHITE]
+        if candidates.sort_by(&:luminance) == [BLACK, WHITE] # rubocop:disable Style/GuardClause
           oklab_components.first > OKLAB_CONTRAST_THRESHOLD ? BLACK : WHITE
         else
           raise ArgumentError, 'method: :oklab picks between black and white only'

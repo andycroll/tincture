@@ -3,7 +3,7 @@
 require 'yaml'
 
 module Tincture
-  class Color
+  class Color # rubocop:disable Style/Documentation
     # Reads CSS colour strings: hex, named colours and the `rgb()`, `hsl()`,
     # `hwb()`, `oklab()` and `oklch()` functions. Extends Color, so its
     # methods are called on the class: `Tincture::Color.parse`.

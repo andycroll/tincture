@@ -5,29 +5,3 @@ AllCops:
 # Method types are inline RBS comments: `#: (String) -> Color`.
 Layout/LeadingCommentSpace:
   AllowRBSInlineAnnotation: true
-
-# `rake rdoc` and `rdoc -C lib` check the documentation.
-Style/Documentation:
-  Enabled: false
-
-# Prefer an expanded if/else to a guard clause.
-Style/GuardClause:
-  Enabled: false
-
-# RDoc drops the docs of a class built with `Color = Data.define do`.
-Style/DataInheritance:
-  Enabled: false
-
-# Colour conversions and CIEDE2000 follow their published formulas line by
-# line, so they stay whole.
-Metrics/AbcSize:
-  Exclude:
-    - lib/tincture/difference.rb
-    - lib/tincture/color/comparison.rb
-    - lib/tincture/color/hsl.rb
-    - lib/tincture/color/oklab.rb
-
-Metrics/MethodLength:
-  Exclude:
-    - lib/tincture/difference.rb
-    - lib/tincture/color/oklab.rb

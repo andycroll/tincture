@@ -22,7 +22,7 @@ module Tincture
   #
   # Conversions follow [CSS Color 4](https://www.w3.org/TR/css-color-4/) and
   # [Oklab](https://bottosson.github.io/posts/oklab/).
-  class Color < Data.define(:red, :green, :blue, :alpha)
+  class Color < Data.define(:red, :green, :blue, :alpha) # rubocop:disable Style/DataInheritance
     # Builds a colour from 0–255 channels and a 0–1 alpha. Out-of-range
     # values clamp, as they do in CSS.
     #

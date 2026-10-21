@@ -21,7 +21,7 @@ module Tincture
     # with the weighting factors kL, kC and kH all 1.
     #
     #: ([Float, Float, Float] first, [Float, Float, Float] second) -> Float
-    def ciede2000(first, second)
+    def ciede2000(first, second) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       (l1, a1, b1), (l2, a2, b2) = first, second
 
       chroma_mean = (Math.hypot(a1, b1) + Math.hypot(a2, b2)) / 2

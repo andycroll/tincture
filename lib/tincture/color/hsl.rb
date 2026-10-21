@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Tincture
-  class Color
+  class Color # rubocop:disable Style/Documentation
     # HSL and its relatives HWB and HSV, which share its hue angle. Mixed into
     # Color.
     module Hsl
@@ -21,7 +21,7 @@ module Tincture
         # give a grey.
         #
         #: (Numeric hue, Numeric whiteness, Numeric blackness, ?Numeric alpha) -> Color
-        def hwb(hue, whiteness, blackness, alpha = 1.0)
+        def hwb(hue, whiteness, blackness, alpha = 1.0) # rubocop:disable Metrics/AbcSize
           whiteness = whiteness.clamp(0, 100) / 100.0
           blackness = blackness.clamp(0, 100) / 100.0
 
@@ -101,7 +101,7 @@ module Tincture
 
       private
 
-      def hue
+      def hue # rubocop:disable Metrics/AbcSize
         red, green, blue = channel_fractions
         max, min = channel_fractions.minmax.reverse
         delta = max - min
