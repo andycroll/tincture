@@ -22,45 +22,38 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - run: bundle exec rake test
-      - if: matrix.ruby == '4.0'
+      - if: ${{ !cancelled() && matrix.ruby == '4.0' }}
         uses: actions/upload-artifact@v7
         with:
           name: coverage
-          path: coverage/
+          path: coverage/coverage.json
           retention-days: 7
 
+  # Dependabot and fork pull requests get a read-only token, so they
+  # cannot comment.
   coverage:
-    if: github.event_name == 'pull_request'
     needs: test
+    if: >-
+      ${{ !cancelled() && github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "4.0"
       - uses: actions/download-artifact@v8
         with:
           name: coverage
-          path: coverage/
-      - name: Check coverage of the changed files
-        id: check
-        run: .github/scripts/coverage_report.rb > "$RUNNER_TEMP/coverage.md"
+      - name: Comment the coverage on the pull request
+        run: |
+          jq -r '.total | [
+            "\(if .lines.missed == 0 then "✅" else "⚠️" end) Line coverage is \(.lines.percent * 100 | round / 100)% (\(.lines.covered) of \(.lines.total) lines)",
+            "\(if .branches.missed == 0 then "✅" else "⚠️" end) Branch coverage is \(.branches.percent * 100 | round / 100)% (\(.branches.covered) of \(.branches.total) branches)"
+          ] | join("\n")' coverage.json > "$RUNNER_TEMP/comment.md"
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/comment.md" --edit-last --create-if-none
         env:
-          BASE_REF: ${{ github.base_ref }}
-      - name: Comment on the pull request
-        # Pull requests from forks get a read-only token, so they skip the comment.
-        if: ${{ !cancelled() && steps.check.outcome != 'skipped' && github.event.pull_request.head.repo.full_name == github.repository }}
-        run: gh pr comment "$PR" --edit-last --create-if-none --body-file "$RUNNER_TEMP/coverage.md"
-        env:
-          GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
-          PR: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
 
   lint:
     runs-on: ubuntu-latest

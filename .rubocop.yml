@@ -1,13 +1,6 @@
-inherit_mode:
-  merge:
-    - Include
-
 AllCops:
   NewCops: enable
   SuggestExtensions: false
-  # RuboCop skips hidden directories unless they are listed.
-  Include:
-    - .github/scripts/*.rb
 
 # Method types are inline RBS comments: `#: (String) -> Color`.
 Layout/LeadingCommentSpace:
