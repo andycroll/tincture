@@ -26,4 +26,6 @@ module Tincture
   InvalidColour = InvalidColor
 end
 
+# :nocov:
 require_relative 'tincture/railtie' if defined?(Rails::Railtie)
+# :nocov:
