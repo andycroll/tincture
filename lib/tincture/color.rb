@@ -23,6 +23,11 @@ module Tincture
   # Conversions follow [CSS Color 4](https://www.w3.org/TR/css-color-4/) and
   # [Oklab](https://bottosson.github.io/posts/oklab/).
   class Color < Data.define(:red, :green, :blue, :alpha)
+    LINEAR_CHANNELS = Array.new(256) do |byte| # :nodoc:
+      fraction = byte / 255.0
+      fraction <= 0.04045 ? fraction / 12.92 : ((fraction + 0.055) / 1.055)**2.4
+    end.freeze
+
     # Builds a colour from 0–255 channels and a 0–1 alpha. Out-of-range
     # values clamp, as they do in CSS.
     #
@@ -37,7 +42,7 @@ module Tincture
     #: () -> String
     def hex
       bytes = opaque? ? rgb : [*rgb, alpha_byte]
-      "##{bytes.map { format('%02x', it) }.join}"
+      "##{bytes.pack('C*').unpack1('H*')}"
     end
 
     alias to_s hex
@@ -68,9 +73,7 @@ module Tincture
 
     def channel_fractions = rgb.map { it / 255.0 }
 
-    def linear_rgb
-      channel_fractions.map { it <= 0.04045 ? it / 12.92 : ((it + 0.055) / 1.055)**2.4 }
-    end
+    def linear_rgb = rgb.map { LINEAR_CHANNELS[it] }
 
     # Adding 0.0 turns -0.0 into 0.0, so CSS never shows "-0".
     def rounded(number, digits) = number.round(digits) + 0.0

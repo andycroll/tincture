@@ -32,6 +32,10 @@ class TypeActiveModelTest < Minitest::Test
     assert_equal '#ff8800', Tincture::Type.new.serialize(Tincture::Color.rgb(255, 136, 0))
     assert_nil Tincture::Type.new.serialize(nil)
   end
+
+  def test_serializes_blank_input_to_nil_without_the_prefix_too
+    assert_nil Tincture::Type.new(prefix: false).serialize('')
+  end
 end
 
 class TypeActiveRecordTest < Minitest::Test

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Tincture
-  class Color
+  class Color # rubocop:disable Style/Documentation
     # Oklab and its cylindrical form Oklch, where equal steps look equally
     # different. Mixed into Color.
     module Oklab
@@ -11,7 +11,7 @@ module Tincture
         # and `b` (blue–yellow) axes.
         #
         #: (Numeric lightness, Numeric green_red, Numeric blue_yellow, ?Numeric alpha) -> Color
-        def oklab(lightness, green_red, blue_yellow, alpha = 1.0)
+        def oklab(lightness, green_red, blue_yellow, alpha = 1.0) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
           lightness = lightness.clamp(0, 1)
 
           l, m, s = [
@@ -77,7 +77,7 @@ module Tincture
 
       protected
 
-      def oklab_components # :nodoc:
+      def oklab_components # :nodoc: # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         red, green, blue = linear_rgb
 
         l, m, s = [
@@ -95,10 +95,8 @@ module Tincture
 
       private
 
-      def mixed_toward(other, amount)
-        lightness, a, b = oklab_components.zip(other.oklab_components).map do |mine, theirs|
-          mine + ((theirs - mine) * amount)
-        end
+      def mixed_oklab(start, finish, amount)
+        lightness, a, b = start.zip(finish).map { |mine, theirs| mine + ((theirs - mine) * amount) }
         Color.oklab(lightness, a, b, alpha)
       end
     end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Tincture
-  class Color
+  class Color # rubocop:disable Style/Documentation
     # How different two colours look. The formulas live in
     # Tincture::Difference. Mixed into Color.
     module Comparison
@@ -28,7 +28,7 @@ module Tincture
       protected
 
       # CIELAB against the D65 white point, as sRGB tools usually report it.
-      def lab_components # :nodoc:
+      def lab_components # :nodoc: # rubocop:disable Metrics/AbcSize
         red, green, blue = linear_rgb
 
         x, y, z = [

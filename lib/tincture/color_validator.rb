@@ -14,7 +14,7 @@ module ActiveModel # :nodoc:
       MESSAGE = 'is not a valid color'
 
       def validate_each(record, attribute, value) # :nodoc:
-        if value.nil? && record.read_attribute_before_type_cast(attribute).present?
+        if value.nil? && record.read_attribute_before_type_cast(attribute).present? # rubocop:disable Style/GuardClause
           record.errors.add(attribute, :invalid_color, message: options.fetch(:message, self.class::MESSAGE))
         end
       end

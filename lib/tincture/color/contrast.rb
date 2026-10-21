@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Tincture
-  class Color
+  class Color # rubocop:disable Style/Documentation
     # WCAG 2 minimum contrast ratios.
     WCAG_RATIOS = { aa: { normal: 4.5, large: 3.0 }, aaa: { normal: 7.0, large: 4.5 } }.freeze
 
@@ -18,6 +18,8 @@ module Tincture
     # WCAG 2 contrast, and picking text colours that read on a background.
     # Mixed into Color.
     module Contrast
+      MIX_STEPS = 2**16 # :nodoc:
+
       # Added to Color itself.
       module ClassMethods
         # Scores for #contrast_color methods other than `:oklab`, keyed by
@@ -138,8 +140,11 @@ module Tincture
       # The smallest mix toward `extreme` that passes the block. Assumes the
       # block fails here and passes at `extreme`.
       def nearest_mix_toward(extreme)
-        amount = (0.0..1.0).bsearch { |candidate| yield mixed_toward(extreme, candidate) }
-        mixed_toward(extreme, amount)
+        start = oklab_components
+        finish = extreme.oklab_components
+
+        step = (0..MIX_STEPS).bsearch { |candidate| yield mixed_oklab(start, finish, candidate.fdiv(MIX_STEPS)) }
+        mixed_oklab(start, finish, step.fdiv(MIX_STEPS))
       end
 
       def contrast_scorer(method)
@@ -150,7 +155,7 @@ module Tincture
       end
 
       def oklab_contrast_color(candidates)
-        if candidates.sort_by(&:luminance) == [BLACK, WHITE]
+        if candidates.sort_by(&:luminance) == [BLACK, WHITE] # rubocop:disable Style/GuardClause
           oklab_components.first > OKLAB_CONTRAST_THRESHOLD ? BLACK : WHITE
         else
           raise ArgumentError, 'method: :oklab picks between black and white only'

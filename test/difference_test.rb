@@ -36,6 +36,10 @@ class ColorDifferenceTest < Minitest::Test
                     0.001
   end
 
+  def test_puts_black_and_white_a_hundred_apart_in_ciede2000
+    assert_in_delta 100.0, Tincture::Color.parse('black').difference('white', formula: :ciede2000), 0.001
+  end
+
   def test_rejects_an_unknown_formula
     assert_raises(ArgumentError) { RED.difference('white', formula: :cie76) }
   end
