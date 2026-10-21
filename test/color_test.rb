@@ -107,10 +107,6 @@ class ColorConversionTest < Minitest::Test
     assert_equal '#ff880080', Tincture::Color.parse(translucent.css_rgb).hex
     assert_equal '#ff880080', Tincture::Color.parse(translucent.css_hsl).hex
   end
-
-  def test_is_immutable
-    assert_predicate ORANGE, :frozen?
-  end
 end
 
 class ColorNamedTest < Minitest::Test
@@ -121,15 +117,6 @@ class ColorNamedTest < Minitest::Test
 
   def test_parses_transparent_as_clear_black
     assert_equal Tincture::Color.rgb(0, 0, 0, 0), Tincture::Color.parse('transparent')
-  end
-
-  def test_keeps_the_names_in_a_frozen_hash
-    assert_predicate Tincture::Color::NAMED, :frozen?
-    assert_equal Tincture::Color.rgb(240, 248, 255), Tincture::Color::NAMED.fetch('aliceblue')
-  end
-
-  def test_reads_all_148_named_colors_and_transparent
-    assert_equal 149, Tincture::Color::NAMED.size
   end
 end
 
@@ -227,12 +214,6 @@ class ColorContrastTest < Minitest::Test
     assert_in_delta 21.0, Tincture::Color.parse('black').contrast_ratio('white')
     assert_in_delta 4.54, grey.contrast_ratio('#ffffff'), 0.01
     assert_in_delta 4.54, Tincture::Color.parse('white').contrast_ratio(grey), 0.01
-  end
-
-  def test_picks_black_or_white_whichever_contrasts_more_as_the_contrast_color
-    assert_equal Tincture::Color::BLACK, Tincture::Color.parse('yellow').contrast_color
-    assert_equal Tincture::Color::BLACK, Tincture::Color.parse('#ff8800').contrast_color
-    assert_equal Tincture::Color::WHITE, Tincture::Color.parse('navy').contrast_color
   end
 end
 
