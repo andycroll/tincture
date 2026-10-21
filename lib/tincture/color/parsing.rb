@@ -81,7 +81,7 @@ module Tincture
         return unless digits
 
         digits = digits.chars.map { it * 2 }.join if digits.length <= 4
-        red, green, blue, alpha = digits.scan(/../).map(&:hex)
+        red, green, blue, alpha = [digits].pack('H*').bytes
         rgb(red, green, blue, (alpha || 255) / 255.0)
       end
 

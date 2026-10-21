@@ -42,7 +42,7 @@ module Tincture
     #: () -> String
     def hex
       bytes = opaque? ? rgb : [*rgb, alpha_byte]
-      "##{bytes.map { format('%02x', it) }.join}"
+      "##{bytes.pack('C*').unpack1('H*')}"
     end
 
     alias to_s hex
