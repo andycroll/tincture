@@ -18,6 +18,8 @@ module Tincture
     # WCAG 2 contrast, and picking text colours that read on a background.
     # Mixed into Color.
     module Contrast
+      MIX_STEPS = 2**16 # :nodoc:
+
       # Added to Color itself.
       module ClassMethods
         # Scores for #contrast_color methods other than `:oklab`, keyed by
@@ -141,8 +143,8 @@ module Tincture
         start = oklab_components
         finish = extreme.oklab_components
 
-        amount = (0.0..1.0).bsearch { |candidate| yield mixed_oklab(start, finish, candidate) }
-        mixed_oklab(start, finish, amount)
+        step = (0..MIX_STEPS).bsearch { |candidate| yield mixed_oklab(start, finish, candidate.fdiv(MIX_STEPS)) }
+        mixed_oklab(start, finish, step.fdiv(MIX_STEPS))
       end
 
       def contrast_scorer(method)
